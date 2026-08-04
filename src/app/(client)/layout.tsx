@@ -1,0 +1,19 @@
+import React from "react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import ScrollToTop from "@/components/layout/ScrollToTop";
+
+export default function ClientLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Navbar />
+      <main className="grow pt-18">{children}</main>
+      <Footer />
+      <ScrollToTop />
+    </>
+  );
+}
