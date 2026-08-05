@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import AdminSidebar from '@/components/admin/AdminSidebar';
+import AdminSidebar from '@/components/admin/layout/AdminSidebar';
 
 export default function AdminLayout({
   children,

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import AdminHeader from '@/components/admin/AdminHeader';
-import PropertyModal from '@/components/admin/PropertyModal';
+import AdminHeader from '@/components/admin/layout/AdminHeader';
+import PropertyModal from '@/components/admin/properties/PropertyModal';
 import { PROPERTIES, CATEGORIES } from '@/data/properties';
 import { Property, PropertyStatus } from '@/types/property';
 import { useToast } from '@/context/ToastContext';

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Alert, AlertDescription, AlertTitle, AlertVariant } from '@/components/reui/alert';
+import { Alert, AlertDescription, AlertTitle, AlertVariant } from '@/components/ui/alert';
 import { CircleCheck, CircleAlert, TriangleAlert, Info, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';

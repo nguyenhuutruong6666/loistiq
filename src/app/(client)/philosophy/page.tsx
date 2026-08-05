@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Sparkles, ArrowUpRight } from 'lucide-react';
-import PhilosophySection from '@/components/home/PhilosophySection';
+import PhilosophySection from '@/components/client/home/PhilosophySection';
 import { PILLARS, ARCHITECTS, MATERIALS } from '@/data/philosophy';
 
 export const metadata: Metadata = {

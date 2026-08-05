@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Alert, AlertDescription, AlertTitle, AlertVariant } from '@/components/reui/alert';
+import { Alert, AlertDescription, AlertTitle, AlertVariant } from '@/components/ui/alert';
 import { CircleCheck, CircleAlert, Info, TriangleAlert, X } from 'lucide-react';
 
 export interface NotificationAlertProps {

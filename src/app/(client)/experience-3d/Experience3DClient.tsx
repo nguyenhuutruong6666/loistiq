@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { PROPERTIES } from '@/data/properties';
 import { Rotate3d, Sparkles, ArrowUpRight, Compass, Eye, ShieldCheck, Layers, Maximize2 } from 'lucide-react';
-import Carousel3DGallery from '@/components/home/Carousel3DGallery';
+import Carousel3DGallery from '@/components/client/home/Carousel3DGallery';
 
 const propertiesWith3D = PROPERTIES.filter((p) => p.sketchfabModelUrl);
 

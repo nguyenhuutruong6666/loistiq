@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import AdminHeader from '@/components/admin/AdminHeader';
+import AdminHeader from '@/components/admin/layout/AdminHeader';
 import { INITIAL_LEADS, VIPLead } from '@/data/adminMock';
 import { useToast } from '@/context/ToastContext';
 import {

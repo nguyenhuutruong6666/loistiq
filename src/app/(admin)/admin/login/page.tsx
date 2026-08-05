@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 import { useToast } from '@/context/ToastContext';
-import { Alert, AlertDescription, AlertTitle } from '@/components/reui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Lock, Mail, ArrowRight, ShieldCheck, Sparkles, CircleAlert, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLoginPage() {

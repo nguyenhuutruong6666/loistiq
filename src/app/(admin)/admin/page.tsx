@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import AdminHeader from '@/components/admin/AdminHeader';
-import AdminStatCard from '@/components/admin/AdminStatCard';
+import AdminHeader from '@/components/admin/layout/AdminHeader';
+import AdminStatCard from '@/components/admin/dashboard/AdminStatCard';
 import { PROPERTIES } from '@/data/properties';
 import { INITIAL_LEADS, INITIAL_ACTIVITIES, VIPLead } from '@/data/adminMock';
 import { useToast } from '@/context/ToastContext';
+import { useIsMounted } from '@/hooks/useIsMounted';
 import {
   Users,
   CalendarCheck,
@@ -66,13 +67,9 @@ export default function AdminDashboardPage() {
   const [chartMetric, setChartMetric] = useState<'inquiries' | 'views' | 'deals'>('inquiries');
   const [leadTab, setLeadTab] = useState<'Tất cả' | 'Mới tiếp nhận' | 'Đã hẹn ngày xem' | 'Thành công'>('Tất cả');
   const [leadSearch, setLeadSearch] = useState('');
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsMounted();
 
   const { showToast } = useToast();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const handleUpdateStatus = (id: string, nextStatus: VIPLead['status']) => {
     setLeads((prev) =>
@@ -119,7 +116,7 @@ export default function AdminDashboardPage() {
       <div className="flex-1 overflow-y-auto">
         <div className="px-4 sm:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 pb-16">
 
-        {/* 2. Key Performance Indicators (KPIs) */}
+        {/* 2. Key Performance Indicators (KPIs)
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <AdminStatCard
             title="Tổng Giá Trị Danh Mục"
@@ -153,7 +150,7 @@ export default function AdminDashboardPage() {
             isPositive={true}
             icon={Award}
           />
-        </div>
+        </div> */}
 
         {/* 3. Visual Analytics: Growth Trend Area Chart + Asset Distribution Donut */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">

@@ -3,7 +3,7 @@
 import React, { useState, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PROPERTIES, CATEGORIES, LOCATIONS } from '@/data/properties';
-import PropertyCard from '@/components/properties/PropertyCard';
+import PropertyCard from '@/components/client/properties/PropertyCard';
 import { Search, RotateCcw, Building2, Sparkles } from 'lucide-react';
 
 function PropertiesContent() {

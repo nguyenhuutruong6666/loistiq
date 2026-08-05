@@ -1,7 +1,7 @@
 import React from "react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import ScrollToTop from "@/components/layout/ScrollToTop";
+import Navbar from "@/components/client/layout/Navbar";
+import Footer from "@/components/client/layout/Footer";
+import ScrollToTop from "@/components/client/layout/ScrollToTop";
 
 export default function ClientLayout({
   children,

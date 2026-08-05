@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PROPERTIES } from '@/data/properties';
-import PropertyCard from '@/components/properties/PropertyCard';
+import PropertyCard from '@/components/client/properties/PropertyCard';
 import { MapPin, Sparkles } from 'lucide-react';
 import PropertyDetailClient from './PropertyDetailClient';
 
