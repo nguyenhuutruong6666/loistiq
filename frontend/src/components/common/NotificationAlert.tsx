@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Alert, AlertDescription, AlertTitle, AlertVariant } from '@/components/ui/alert';
 import { CircleCheck, CircleAlert, Info, TriangleAlert, X } from 'lucide-react';
 
@@ -34,22 +34,26 @@ export function NotificationAlert({
 }: NotificationAlertProps) {
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
+  const exitTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setExiting(true);
-    setTimeout(() => {
+    exitTimerRef.current = setTimeout(() => {
       setVisible(false);
       onClose?.();
     }, 300);
-  };
+  }, [onClose]);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
     if (duration > 0) {
-      const timer = setTimeout(() => handleClose(), duration);
-      return () => clearTimeout(timer);
+      timer = setTimeout(() => handleClose(), duration);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration]);
+    return () => {
+      if (timer) clearTimeout(timer);
+      if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
+    };
+  }, [duration, handleClose]);
 
   if (!visible) return null;
 

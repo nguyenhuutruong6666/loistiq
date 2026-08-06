@@ -1,8 +1,6 @@
 'use client';
 
-import React from 'react';
-import { Bell, Plus } from 'lucide-react';
-import Link from 'next/link';
+import { Bell } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface AdminHeaderProps {
@@ -36,13 +34,13 @@ export default function AdminHeader({
       {/* Right Tools & Actions */}
       <div className="flex items-center gap-2.5 sm:gap-3">
         {/* Quick Add Button */}
-        <Link
+        {/* <Link
           href="/admin/properties?action=new"
           className="hidden sm:inline-flex items-center gap-1.5 bg-[#121212] text-white hover:bg-[#b8864a] px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs transition-all"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Thêm BĐS Mới</span>
-        </Link>
+        </Link> */}
 
         {/* Notification Bell */}
         <div className="relative">

@@ -57,7 +57,7 @@ export default function AdminContactsPage() {
   return (
     <div className="flex flex-col h-full">
       <AdminHeader
-        title="Yêu Cầu Tư Vấn & Lịch VIP"
+        title="Quản Lý Tư Vấn"
         subtitle="Quản lý khách hàng danh giá đăng ký tham quan và tư vấn riêng tư"
       />
 

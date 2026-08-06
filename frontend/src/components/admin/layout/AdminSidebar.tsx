@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   Building2,
   Users,
-  Mail,
   ExternalLink,
   LogOut,
 } from 'lucide-react';
@@ -39,19 +38,14 @@ const NAV_ITEMS = [
     name: 'Quản Lý BĐS',
     href: '/admin/properties',
     icon: Building2,
-    badge: '10',
+    badge: '20',
   },
   {
-    name: 'Yêu Cầu Tư Vấn & Lịch VIP',
+    name: 'Quản Lý Tư Vấn',
     href: '/admin/contacts',
     icon: Users,
     badge: '5 Mới',
     badgeClass: 'bg-[#b8864a] text-white',
-  },
-  {
-    name: 'Bản Tin & Tạp Chí',
-    href: '/admin/newsletter',
-    icon: Mail,
   },
 ];
 

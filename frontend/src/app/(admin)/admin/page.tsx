@@ -4,15 +4,11 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AdminHeader from '@/components/admin/layout/AdminHeader';
-import AdminStatCard from '@/components/admin/dashboard/AdminStatCard';
 import { PROPERTIES } from '@/data/properties';
 import { INITIAL_LEADS, INITIAL_ACTIVITIES, VIPLead } from '@/data/adminMock';
 import { useToast } from '@/context/ToastContext';
 import { useIsMounted } from '@/hooks/useIsMounted';
 import {
-  Users,
-  CalendarCheck,
-  Coins,
   ArrowUpRight,
   Sparkles,
   Phone,
@@ -81,11 +77,6 @@ export default function AdminDashboardPage() {
       description: `Yêu cầu của khách hàng đã chuyển sang: "${nextStatus}"`,
     });
   };
-
-  const pendingLeads = useMemo(
-    () => leads.filter((l) => l.status === 'Mới tiếp nhận' || l.status === 'Đã hẹn ngày xem'),
-    [leads]
-  );
 
   const filteredLeads = useMemo(() => {
     return leads.filter((lead) => {
@@ -357,7 +348,7 @@ export default function AdminDashboardPage() {
 
               {/* Center text of Donut */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-xl font-extrabold text-[#121212]">10</span>
+                <span className="text-xl font-extrabold text-[#121212]">{PROPERTIES.length}</span>
                 <span className="text-[10px] font-semibold text-[#8c5a1e] uppercase tracking-wider">
                   Dinh Thự
                 </span>
@@ -395,7 +386,7 @@ export default function AdminDashboardPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="font-serif text-lg font-bold text-[#121212] flex items-center gap-2.5">
-                  <span>Yêu Cầu Tư Vấn & Lịch Khách VIP</span>
+                  <span>Quản Lý Tư Vấn</span>
                   <span className="font-sans text-[10px] px-2.5 py-0.5 rounded-full bg-[#b8864a]/15 text-[#8c5a1e] font-bold border border-[#b8864a]/30">
                     {leads.length} Khách Hàng
                   </span>

@@ -3,7 +3,8 @@
 import React, { useState, useMemo } from 'react';
 import AdminHeader from '@/components/admin/layout/AdminHeader';
 import PropertyModal from '@/components/admin/properties/PropertyModal';
-import { PROPERTIES, CATEGORIES } from '@/data/properties';
+import { PROPERTIES } from '@/data/properties';
+import { CATEGORIES } from '@/data/categories';
 import { Property, PropertyStatus } from '@/types/property';
 import { useToast } from '@/context/ToastContext';
 import {
@@ -16,12 +17,24 @@ import {
   Building2,
 } from 'lucide-react';
 import Link from 'next/link';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+
+const ITEMS_PER_PAGE = 10;
 
 export default function AdminPropertiesPage() {
   const [properties, setProperties] = useState<Property[]>(PROPERTIES);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [selectedStatus, setSelectedStatus] = useState('Tất cả');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
 
@@ -41,6 +54,41 @@ export default function AdminPropertiesPage() {
       return matchCat && matchStatus && matchSearch;
     });
   }, [properties, selectedCategory, selectedStatus, searchQuery]);
+
+  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
+
+  const paginatedProperties = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredProperties.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredProperties, currentPage]);
+
+  const handleSearchChange = (val: string) => {
+    setSearchQuery(val);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (val: string) => {
+    setSelectedCategory(val);
+    setCurrentPage(1);
+  };
+
+  const handleStatusChange = (val: string) => {
+    setSelectedStatus(val);
+    setCurrentPage(1);
+  };
+
+  const pageNumbers = useMemo(() => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 3) {
+      return [1, 2, 3, 4, 'ellipsis', totalPages] as (number | 'ellipsis')[];
+    }
+    if (currentPage >= totalPages - 2) {
+      return [1, 'ellipsis', totalPages - 3, totalPages - 2, totalPages - 1, totalPages] as (number | 'ellipsis')[];
+    }
+    return [1, 'ellipsis', currentPage - 1, currentPage, currentPage + 1, 'ellipsis', totalPages] as (number | 'ellipsis')[];
+  }, [currentPage, totalPages]);
 
   const handleOpenAdd = () => {
     setEditingProperty(null);
@@ -153,7 +201,7 @@ export default function AdminPropertiesPage() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 placeholder="Tìm tên dinh thự, thành phố..."
                 className="w-full bg-[#F8F7F3] border border-black/10 rounded-xl py-2 pl-9 pr-4 text-xs text-[#121212] focus:outline-none focus:border-[#b8864a] focus:bg-white transition-colors"
               />
@@ -163,7 +211,7 @@ export default function AdminPropertiesPage() {
             {/* Filter Category */}
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => handleCategoryChange(e.target.value)}
               className="w-full sm:w-auto bg-[#F8F7F3] border border-black/10 rounded-xl py-2 px-3 text-xs text-[#121212] focus:outline-none focus:border-[#b8864a] focus:bg-white"
             >
               {CATEGORIES.map((c) => (
@@ -176,7 +224,7 @@ export default function AdminPropertiesPage() {
             {/* Filter Status */}
             <select
               value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
+              onChange={(e) => handleStatusChange(e.target.value)}
               className="w-full sm:w-auto bg-[#F8F7F3] border border-black/10 rounded-xl py-2 px-3 text-xs text-[#121212] focus:outline-none focus:border-[#b8864a] focus:bg-white"
             >
               <option value="Tất cả">Tất cả trạng thái</option>
@@ -198,7 +246,7 @@ export default function AdminPropertiesPage() {
         </div>
 
         {/* Bảng danh sách BĐS */}
-        <div className="bg-white rounded-3xl sm:rounded-4xl border border-black/5 shadow-xs overflow-hidden">
+        <div className="bg-white rounded-3xl sm:rounded-4xl border border-black/5 shadow-xs overflow-hidden flex flex-col">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
@@ -212,7 +260,7 @@ export default function AdminPropertiesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-black/5">
-                {filteredProperties.map((item) => (
+                {paginatedProperties.map((item) => (
                   <tr key={item.id} className="hover:bg-[#FAF7F2]/40 transition-colors">
                     {/* Ảnh & Tên */}
                     <td className="py-4 pl-6 pr-4">
@@ -314,6 +362,55 @@ export default function AdminPropertiesPage() {
               <p>Không tìm thấy bất động sản nào khớp với tiêu chí tìm kiếm.</p>
             </div>
           )}
+
+          {/* Phân trang Admin (10 cái / trang) */}
+          <div className="p-4 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#FAF7F2]/40">
+            <div className="text-xs text-[#7a7a7a]">
+              Hiển thị{' '}
+              <strong className="text-[#121212]">
+                {filteredProperties.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0} -{' '}
+                {Math.min(currentPage * ITEMS_PER_PAGE, filteredProperties.length)}
+              </strong>{' '}
+              trong tổng số <strong className="text-[#121212]">{filteredProperties.length}</strong> bất động sản
+            </div>
+
+            {totalPages > 1 && (
+              <Pagination className="mx-0 w-auto justify-end">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                    />
+                  </PaginationItem>
+
+                  {pageNumbers.map((page, idx) =>
+                    page === 'ellipsis' ? (
+                      <PaginationItem key={`ellipsis-${idx}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          isActive={currentPage === page}
+                          onClick={() => setCurrentPage(page)}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  )}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </div>
         </div>
         </div>
       </div>

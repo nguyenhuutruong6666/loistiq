@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Property, PropertyCategory, PropertyStatus } from '@/types/property';
-import { CATEGORIES } from '@/data/properties';
+import { CATEGORIES } from '@/data/categories';
 import { X, Sparkles, Building2 } from 'lucide-react';
 
 interface PropertyModalProps {

@@ -1,10 +1,23 @@
 'use client';
 
-import React, { useState, useMemo, Suspense } from 'react';
+import React, { useState, useMemo, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { PROPERTIES, CATEGORIES, LOCATIONS } from '@/data/properties';
+import { PROPERTIES } from '@/data/properties';
+import { CATEGORIES } from '@/data/categories';
+import { LOCATIONS } from '@/data/locations';
 import PropertyCard from '@/components/client/properties/PropertyCard';
 import { Search, RotateCcw, Building2, Sparkles } from 'lucide-react';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+
+const ITEMS_PER_PAGE = 6;
 
 function PropertiesContent() {
   const searchParams = useSearchParams();
@@ -14,6 +27,8 @@ function PropertiesContent() {
   const [selectedLocation, setSelectedLocation] = useState<string>('Tất cả vị trí');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [priceSort, setPriceSort] = useState<'all' | 'asc' | 'desc'>('all');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const listTopRef = useRef<HTMLDivElement>(null);
 
   // Lọc và sắp xếp danh sách bất động sản theo tiêu chí người dùng
   const filteredProperties = useMemo(() => {
@@ -43,16 +58,66 @@ function PropertiesContent() {
     });
   }, [selectedCategory, selectedLocation, searchQuery, priceSort]);
 
+  // Tính toán số trang và danh sách phân trang (6 cái / trang)
+  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
+
+  const paginatedProperties = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredProperties.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredProperties, currentPage]);
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const handleLocationChange = (location: string) => {
+    setSelectedLocation(location);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (val: string) => {
+    setSearchQuery(val);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (sort: 'all' | 'asc' | 'desc') => {
+    setPriceSort(sort);
+    setCurrentPage(1);
+  };
+
   // Đặt lại toàn bộ bộ lọc về trạng thái ban đầu
   const handleResetFilters = () => {
     setSelectedCategory('Tất cả');
     setSelectedLocation('Tất cả vị trí');
     setSearchQuery('');
     setPriceSort('all');
+    setCurrentPage(1);
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    if (listTopRef.current) {
+      listTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Tạo danh sách số trang có dấu chấm lửng
+  const pageNumbers = useMemo(() => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 3) {
+      return [1, 2, 3, 4, 'ellipsis', totalPages] as (number | 'ellipsis')[];
+    }
+    if (currentPage >= totalPages - 2) {
+      return [1, 'ellipsis', totalPages - 3, totalPages - 2, totalPages - 1, totalPages] as (number | 'ellipsis')[];
+    }
+    return [1, 'ellipsis', currentPage - 1, currentPage, currentPage + 1, 'ellipsis', totalPages] as (number | 'ellipsis')[];
+  }, [currentPage, totalPages]);
+
   return (
-    <div className="py-8 sm:py-12 lg:py-14 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto space-y-6 sm:space-y-10">
+    <div ref={listTopRef} className="py-8 sm:py-12 lg:py-14 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto space-y-6 sm:space-y-10">
       {/* Tiêu đề trang & Giới thiệu */}
       <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#b8864a]/10 border border-[#8c5a1e]/30 text-[#8c5a1e] text-[10px] sm:text-xs font-semibold uppercase tracking-[2px]">
@@ -78,7 +143,7 @@ function PropertiesContent() {
               type="text"
               placeholder="Tìm theo tên dinh thự, thành phố..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full bg-[#F8F7F3] border border-black/10 rounded-full py-2.5 sm:py-3 pl-11 pr-4 text-xs sm:text-sm text-[#121212] placeholder-[#7a7a7a] focus:outline-none focus:border-[#b8864a] focus:bg-white"
             />
           </div>
@@ -87,7 +152,7 @@ function PropertiesContent() {
           <div className="md:col-span-3">
             <select
               value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
+              onChange={(e) => handleLocationChange(e.target.value)}
               className="w-full bg-[#F8F7F3] border border-black/10 rounded-full py-2.5 sm:py-3 px-4 text-xs sm:text-sm text-[#121212] focus:outline-none focus:border-[#b8864a] focus:bg-white"
             >
               {LOCATIONS.map((loc) => (
@@ -102,7 +167,7 @@ function PropertiesContent() {
           <div className="md:col-span-3">
             <select
               value={priceSort}
-              onChange={(e) => setPriceSort(e.target.value as 'all' | 'asc' | 'desc')}
+              onChange={(e) => handleSortChange(e.target.value as 'all' | 'asc' | 'desc')}
               className="w-full bg-[#F8F7F3] border border-black/10 rounded-full py-2.5 sm:py-3 px-4 text-xs sm:text-sm text-[#121212] focus:outline-none focus:border-[#b8864a] focus:bg-white"
             >
               <option value="all">Sắp xếp: Mặc định</option>
@@ -119,7 +184,7 @@ function PropertiesContent() {
             return (
               <button
                 key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryChange(category)}
                 className={`whitespace-nowrap px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-medium transition-all shrink-0 ${
                   isSelected
                     ? 'bg-[#121212] text-white shadow-md'
@@ -135,7 +200,12 @@ function PropertiesContent() {
         {/* Thống kê số lượng kết quả và nút hoàn tác */}
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#7a7a7a] pt-1">
           <span>
-            Hiển thị <strong>{filteredProperties.length}</strong> bất động sản phù hợp
+            Hiển thị{' '}
+            <strong>
+              {filteredProperties.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0} -{' '}
+              {Math.min(currentPage * ITEMS_PER_PAGE, filteredProperties.length)}
+            </strong>{' '}
+            trong tổng số <strong>{filteredProperties.length}</strong> bất động sản phù hợp
           </span>
 
           {(selectedCategory !== 'Tất cả' ||
@@ -153,11 +223,53 @@ function PropertiesContent() {
       </div>
 
       {/* Lưới danh sách các bất động sản */}
-      {filteredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
-          {filteredProperties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
+      {paginatedProperties.length > 0 ? (
+        <div className="space-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
+            {paginatedProperties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+
+          {/* Phân trang (Pagination) */}
+          {totalPages > 1 && (
+            <div className="pt-4 border-t border-black/5">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                    />
+                  </PaginationItem>
+
+                  {pageNumbers.map((page, idx) =>
+                    page === 'ellipsis' ? (
+                      <PaginationItem key={`ellipsis-${idx}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          isActive={currentPage === page}
+                          onClick={() => handlePageChange(page)}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  )}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-center py-12 sm:py-20 bg-white rounded-3xl sm:rounded-4xl border border-black/5 p-6 sm:p-8 space-y-4">

@@ -63,7 +63,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     () => false
   );
 
-  // Đọc trạng thái đăng nhập từ localStorage một cách tối ưu, tránh cascading renders
+  // Đọc trạng thái đăng nhập từ localStorage một cách tối ưu
   const isStoredAuth = useSyncExternalStore(
     subscribeAuth,
     getAuthSnapshot,
