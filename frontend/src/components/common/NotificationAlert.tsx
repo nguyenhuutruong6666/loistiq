@@ -10,19 +10,9 @@ export interface NotificationAlertProps {
   description: string;
   onClose?: () => void;
   className?: string;
-  /**
-   * Khi `floating=true` (mặc định), thông báo sẽ hiển thị cố định ở góc trên bên phải màn hình.
-   * Khi `floating=false`, thông báo hiển thị inline tại vị trí trong luồng trang.
-   */
   floating?: boolean;
-  /** Tự động ẩn sau số mili-giây. Mặc định 4500ms. Truyền 0 để tắt tự động ẩn. */
   duration?: number;
 }
-
-/**
- * Component hiển thị thông báo xử lý Trạng thái (Thành công / Thất bại / Cảnh báo / Thông tin).
- * Mặc định ghim cố định ở góc trên bên phải màn hình (floating).
- */
 export function NotificationAlert({
   type = 'success',
   title,
@@ -107,7 +97,7 @@ export function NotificationAlert({
     return alertContent;
   }
 
-  // Floating: cố định góc trên bên phải màn hình
+  //cố định góc trên bên phải màn hình
   return (
     <div
       role="region"
@@ -140,7 +130,7 @@ export function NotificationAlert({
   );
 }
 
-// Mẫu Pattern thông báo Thành công (Success)
+// Mẫu Pattern thông báo Thành công
 export function SuccessPattern({
   title = "Success! All good",
   description = "Everything is working as expected. You can continue with your task.",
@@ -157,7 +147,7 @@ export function SuccessPattern({
   );
 }
 
-// Mẫu Pattern thông báo Thất bại (Error / Failed)
+// Mẫu Pattern thông báo Thất bại
 export function ErrorPattern({
   title = "Error! Something went wrong",
   description = "Unable to process the request. Please check your inputs and try again.",

@@ -290,7 +290,7 @@ export function SidebarInset({
   return (
     <main
       className={cn(
-        'relative flex min-h-svh flex-1 flex-col bg-[#F8F7F3]',
+        'relative flex min-h-svh flex-1 flex-col bg-[#fafafa]',
         className
       )}
       {...props}
@@ -307,7 +307,7 @@ export function SidebarHeader({
   return (
     <div
       data-sidebar="header"
-      className={cn('flex flex-col gap-2 p-4 border-b border-black/5', className)}
+      className={cn('flex flex-col gap-2 p-4 border-b border-black/10', className)}
       {...props}
     />
   );
@@ -320,7 +320,7 @@ export function SidebarFooter({
   return (
     <div
       data-sidebar="footer"
-      className={cn('flex flex-col gap-2 p-4 border-t border-black/5 bg-[#F3EFE6]/40', className)}
+      className={cn('flex flex-col gap-2 p-3 border-t border-black/10 bg-[#fafafa]', className)}
       {...props}
     />
   );
@@ -362,7 +362,7 @@ export function SidebarGroupLabel({
   ...props
 }: React.ComponentProps<'div'> & { asChild?: boolean }) {
   const baseClasses = cn(
-    'duration-200 flex h-8 shrink-0 items-center px-2 text-[10px] font-bold uppercase tracking-widest text-[#8c5a1e] outline-none transition-[margin,opacity] ease-linear group-data-[collapsible=icon]:opacity-0',
+    'duration-200 flex h-8 shrink-0 items-center px-2 text-[11px] font-semibold uppercase tracking-wider text-[#71717a] outline-none transition-[margin,opacity] ease-linear group-data-[collapsible=icon]:opacity-0',
     className
   );
 
@@ -391,7 +391,7 @@ export function SidebarGroupAction({
     <button
       data-sidebar="group-action"
       className={cn(
-        'absolute right-3 top-3.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-[#7a7a7a] outline-none hover:bg-black/5 hover:text-[#121212] transition-colors cursor-pointer',
+        'absolute right-3 top-3.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-[#71717a] outline-none hover:bg-black/5 hover:text-[#09090b] transition-colors cursor-pointer',
         className
       )}
       {...props}
@@ -453,11 +453,11 @@ export function SidebarMenuButton({
   size?: 'default' | 'sm' | 'lg';
 }) {
   const baseClasses = cn(
-    'peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-xl p-2.5 text-left text-xs font-medium outline-none transition-all duration-200 hover:bg-black/5 hover:text-[#121212] disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 group-data-[collapsible=icon]:!size-9 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
-    variant === 'outline' && 'border border-black/10 hover:bg-black/5',
+    'peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-lg p-2.5 text-left text-xs font-medium outline-none transition-all duration-200 hover:bg-[#f4f4f5] hover:text-[#09090b] disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 group-data-[collapsible=icon]:!size-9 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
+    variant === 'outline' && 'border border-black/10 hover:bg-[#f4f4f5]',
     isActive
-      ? 'bg-[#b8864a] text-white font-semibold shadow-xs shadow-[#b8864a]/20 hover:bg-[#a67439]'
-      : 'text-[#5c5c5c]',
+      ? 'bg-[#18181b] text-white font-medium shadow-xs hover:bg-[#27272a] hover:text-white [&>svg]:text-white'
+      : 'text-[#71717a] [&>svg]:text-[#71717a]',
     size === 'sm' && 'h-8 text-xs',
     size === 'lg' && 'h-12 text-sm',
     className

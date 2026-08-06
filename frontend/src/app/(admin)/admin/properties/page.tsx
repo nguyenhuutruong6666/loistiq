@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import AdminHeader from '@/components/admin/layout/AdminHeader';
 import PropertyModal from '@/components/admin/properties/PropertyModal';
+import ConfirmDialog from '@/components/common/ConfirmDialog';
 import { PROPERTIES } from '@/data/properties';
 import { CATEGORIES } from '@/data/categories';
 import { Property, PropertyStatus } from '@/types/property';
@@ -37,6 +38,11 @@ export default function AdminPropertiesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; id: string; title: string }>({
+    isOpen: false,
+    id: '',
+    title: '',
+  });
 
   const { showToast } = useToast();
 
@@ -116,7 +122,7 @@ export default function AdminPropertiesPage() {
       const newId = `prop-${Date.now()}`;
       const newProperty: Property = {
         id: newId,
-        slug: newId,
+        slug: formData.slug || `loistiq-${Date.now()}`,
         title: formData.title || 'Dinh Thự Mới',
         subtitle: formData.subtitle || 'Tuyệt tác bất động sản nghỉ dưỡng',
         category: formData.category || 'Dinh Thự Ven Biển',
@@ -127,30 +133,44 @@ export default function AdminPropertiesPage() {
         city: formData.city || 'Phú Quốc',
         status: formData.status || 'Đang mở bán',
         heroImage: formData.heroImage || 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1200',
-        galleryImages: [formData.heroImage || 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1200'],
+        galleryImages: formData.galleryImages && formData.galleryImages.length > 0 
+          ? formData.galleryImages 
+          : [formData.heroImage || 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1200'],
+        sketchfabModelUrl: formData.sketchfabModelUrl,
+        virtualTour360Url: formData.virtualTour360Url,
         area: formData.area || '1,000 m²',
-        bedrooms: formData.bedrooms || 4,
-        bathrooms: formData.bathrooms || 5,
-        floors: formData.floors || 3,
-        yearBuilt: 2026,
-        description: ['Tuyệt tác kiến trúc hiện đại mang đậm dấu ấn cá nhân.'],
-        highlights: ['Tầm nhìn panorama biển ngọc', 'Hồ bơi vô cực nước mặn', 'Bến du thuyền riêng'],
-        features: [
-          { icon: 'Maximize2', label: 'Diện tích', value: formData.area || '1,000 m²' },
-          { icon: 'BedDouble', label: 'Phòng ngủ', value: `${formData.bedrooms || 4} PN` },
-          { icon: 'Bath', label: 'Phòng tắm', value: `${formData.bathrooms || 5} PT` },
-        ],
-        amenities: [
-          { name: 'Hồ bơi riêng', description: 'Hồ bơi tràn viền tầm nhìn đại dương' },
-          { name: 'Hầm rượu & Cigar Lounge', description: 'Không gian thưởng thức riêng tư' },
-        ],
-        floorPlans: [],
-        architect: {
+        bedrooms: formData.bedrooms ?? 4,
+        bathrooms: formData.bathrooms ?? 5,
+        floors: formData.floors ?? 3,
+        yearBuilt: formData.yearBuilt ?? 2026,
+        description: formData.description && formData.description.length > 0
+          ? formData.description
+          : ['Tuyệt tác kiến trúc hiện đại mang đậm dấu ấn cá nhân.'],
+        highlights: formData.highlights && formData.highlights.length > 0
+          ? formData.highlights
+          : ['Tầm nhìn panorama đại dương', 'Hồ bơi vô cực nước mặn', 'Bến du thuyền riêng'],
+        features: formData.features && formData.features.length > 0
+          ? formData.features
+          : [
+              { icon: 'Maximize', label: 'Diện tích', value: formData.area || '1,000 m²' },
+              { icon: 'Bed', label: 'Phòng ngủ', value: `${formData.bedrooms || 4} PN` },
+              { icon: 'Bath', label: 'Phòng tắm', value: `${formData.bathrooms || 5} PT` },
+            ],
+        amenities: formData.amenities && formData.amenities.length > 0
+          ? formData.amenities
+          : [
+              { name: 'Hồ bơi riêng', description: 'Hồ bơi tràn viền tầm nhìn đại dương' },
+              { name: 'Hầm rượu & Cigar Lounge', description: 'Không gian thưởng thức riêng tư' },
+            ],
+        floorPlans: formData.floorPlans || [],
+        architect: formData.architect || {
           name: 'Marco Rossi',
           role: 'Kiến Trúc Sư Trưởng LOISTIQ',
           avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
           quote: 'Mỗi chi tiết đều được may đo riêng cho gia chủ thượng lưu.',
         },
+        featuredInCarousel: formData.featuredInCarousel ?? false,
+        bentoSize: formData.bentoSize || 'small',
       };
 
       setProperties((prev) => [newProperty, ...prev]);
@@ -163,14 +183,21 @@ export default function AdminPropertiesPage() {
   };
 
   const handleDelete = (id: string, title: string) => {
-    if (confirm(`Quý khách có chắc chắn muốn xóa "${title}" khỏi danh mục không?`)) {
-      setProperties((prev) => prev.filter((item) => item.id !== id));
-      showToast({
-        type: 'info',
-        title: 'Đã xóa bất động sản',
-        description: `Dinh thự "${title}" đã được gỡ khỏi danh sách hiển thị.`,
-      });
-    }
+    setDeleteDialog({
+      isOpen: true,
+      id,
+      title,
+    });
+  };
+
+  const confirmDeleteProperty = () => {
+    if (!deleteDialog.id) return;
+    setProperties((prev) => prev.filter((item) => item.id !== deleteDialog.id));
+    showToast({
+      type: 'info',
+      title: 'Đã xóa bất động sản',
+      description: `Dinh thự "${deleteDialog.title}" đã được gỡ khỏi danh sách hiển thị.`,
+    });
   };
 
   const handleChangeStatus = (id: string, newStatus: PropertyStatus) => {
@@ -421,6 +448,18 @@ export default function AdminPropertiesPage() {
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveProperty}
         initialData={editingProperty}
+      />
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={() => setDeleteDialog({ isOpen: false, id: '', title: '' })}
+        onConfirm={confirmDeleteProperty}
+        title="Xác nhận xóa bất động sản"
+        message={`Quý khách có chắc chắn muốn xóa dinh thự "${deleteDialog.title}" khỏi hệ thống LOISTIQ không? Hành động này không thể hoàn tác.`}
+        confirmText="Xóa bất động sản"
+        cancelText="Giữ lại"
+        isDestructive={true}
       />
     </div>
   );

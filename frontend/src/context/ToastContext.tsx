@@ -75,7 +75,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ toasts, showToast, removeToast }}>
       {children}
 
-      {/* Floating Toasts Container: Hiển thị góc trên cùng bên phải toàn ứng dụng */}
+      {/* Hiển thị góc trên cùng bên phải toàn ứng dụng */}
       <aside
         aria-label="Thông báo hệ thống"
         aria-live="polite"

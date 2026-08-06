@@ -295,7 +295,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <div className="flex items-center gap-1.5 text-xs text-[#7a7a7a]">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#b8864a]" /> Tình trạng pháp lý
                 </div>
-                <p className="font-serif text-base sm:text-lg font-bold text-[#121212]">Sổ đỏ vĩnh viễn</p>
+                <p className="font-serif text-base sm:text-lg font-bold text-[#121212]">
+                  {property.features?.find((f) => f.label.toLowerCase().includes('pháp lý') || f.icon === 'ShieldCheck')?.value || 'Sổ đỏ vĩnh viễn'}
+                </p>
               </div>
             </div>
           </div>

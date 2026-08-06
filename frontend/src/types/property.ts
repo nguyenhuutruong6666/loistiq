@@ -1,6 +1,4 @@
-/**
- * Định nghĩa các loại danh mục bất động sản cao cấp
- */
+//Định nghĩa các loại danh mục bất động sản cao cấp
 export type PropertyCategory =
   | 'Dinh Thự Ven Biển'
   | 'Penthouse Hoàng Gia'
@@ -9,32 +7,24 @@ export type PropertyCategory =
   | 'Căn Hộ Nghệ Thuật'
   | 'Dinh Thự Sinh Thái';
 
-/**
- * Trạng thái mở bán của bất động sản
- */
+//Trạng thái mở bán của bất động sản
 export type PropertyStatus = 'Đang mở bán' | 'Độc quyền' | 'Sắp ra mắt' | 'Đã bàn giao';
 
-/**
- * Thông số kỹ thuật đặc trưng của bất động sản
- */
+//Thông số kỹ thuật đặc trưng của bất động sản
 export interface PropertyFeature {
   icon: string;
   label: string;
   value: string;
 }
 
-/**
- * Tiện ích cao cấp đi kèm
- */
+//Tiện ích cao cấp đi kèm
 export interface PropertyAmenity {
   name: string;
   description: string;
   icon?: string;
 }
 
-/**
- * Sơ đồ mặt bằng các tầng
- */
+//Sơ đồ mặt bằng các tầng
 export interface PropertyFloorPlan {
   name: string;
   area: string;
@@ -43,9 +33,10 @@ export interface PropertyFloorPlan {
   bathrooms: number;
 }
 
-/**
- * Giao diện cấu trúc đầy đủ của một bất động sản
- */
+//Kích thước hiển thị dạng Bento Grid
+export type PropertyBentoSize = 'large' | 'small' | 'wide';
+
+//Giao diện cấu trúc đầy đủ của một bất động sản
 export interface Property {
   id: string;
   slug: string;
@@ -53,16 +44,16 @@ export interface Property {
   subtitle: string;
   category: PropertyCategory;
   price: string;
-  rawPrice: number; // Mức giá dạng số (đơn vị: Tỷ VNĐ) phục vụ sắp xếp và lọc
+  rawPrice: number; 
   location: string;
   address: string;
   city: string;
   status: PropertyStatus;
   heroImage: string;
   galleryImages: string[];
-  sketchfabModelUrl?: string; // Đường dẫn nhúng mô hình 3D tương tác Sketchfab
-  virtualTour360Url?: string; // Đường dẫn tham quan thực tế ảo 360 độ
-  area: string; // Diện tích (ví dụ: "1,250 m²")
+  sketchfabModelUrl?: string; 
+  virtualTour360Url?: string; 
+  area: string;
   bedrooms: number;
   bathrooms: number;
   floors: number;
@@ -79,5 +70,6 @@ export interface Property {
     quote: string;
   };
   featuredInCarousel?: boolean;
-  bentoSize?: 'large' | 'small' | 'wide';
+  bentoSize?: PropertyBentoSize;
 }
+
