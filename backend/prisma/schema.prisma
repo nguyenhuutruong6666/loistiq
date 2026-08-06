@@ -1,0 +1,99 @@
+// Cấu hình kết nối Prisma ORM với cơ sở dữ liệu PostgreSQL
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Bảng tài khoản Quản trị viên
+model AdminUser {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("Super Administrator")
+  avatar    String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
+
+// Bảng Bất động sản cao cấp LOISTIQ
+model Property {
+  id                 String   @id @default(uuid()) @db.Uuid
+  slug               String   @unique
+  title              String
+  subtitle           String
+  category           String
+  price              String
+  rawPrice           Float    @map("raw_price")
+  location           String
+  address            String
+  city               String
+  status             String   @default("Đang mở bán")
+  heroImage          String   @map("hero_image")
+  galleryImages      Json     @default("[]") @map("gallery_images")
+  sketchfabModelUrl  String?  @map("sketchfab_model_url")
+  virtualTour360Url  String?  @map("virtual_tour_360_url")
+  area               String
+  bedrooms           Int      @default(0)
+  bathrooms          Int      @default(0)
+  floors             Int      @default(1)
+  yearBuilt          Int      @default(2026) @map("year_built")
+  description        Json     @default("[]")
+  highlights         Json     @default("[]")
+  features           Json     @default("[]")
+  amenities          Json     @default("[]")
+  floorPlans         Json     @default("[]") @map("floor_plans")
+  architect          Json     @default("{}")
+  featuredInCarousel Boolean  @default(false) @map("featured_in_carousel")
+  bentoSize          String?  @map("bento_size")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("properties")
+}
+
+// Bảng Khách hàng VIP đăng ký tư vấn & đặt lịch xem nhà
+model VIPLead {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  phone            String
+  email            String
+  categoryInterest String   @map("category_interest")
+  budget           String
+  propertyTitle    String?  @map("property_title")
+  message          String?
+  status           String   @default("Mới tiếp nhận")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("vip_leads")
+}
+
+// Bảng Khách hàng đăng ký nhận Bản tin VIP (Newsletter)
+model NewsletterSubscriber {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  status       String   @default("Hoạt động")
+  subscribedAt DateTime @default(now()) @map("subscribed_at")
+
+  @@map("newsletter_subscribers")
+}
+
+// Bảng Nhật ký hoạt động của Hệ thống Quản trị
+model AdminActivity {
+  id        String   @id @default(uuid()) @db.Uuid
+  user      String
+  action    String
+  target    String
+  time      String
+  type      String   @default("system")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("admin_activities")
+}
